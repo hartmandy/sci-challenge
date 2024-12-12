@@ -1,14 +1,36 @@
-import { createMocks } from 'node-mocks-http';
-import handler from './route';
+import { GET } from './route';
 
-describe('/api/catalog', () => {
+describe('/api/catalog GET', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('should return a list of HP options', async () => {
-        const { req, res } = createMocks({
-            method: 'GET',
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                object: 'catalog',
+                uri: 'https://api.swu-db.com/catalog/hps',
+                total_values: 20,
+                data: ['0', '+1', '+2', '3'],
+            }),
         });
 
-        await handler(req, res);
+        const response = await GET();
+        const result = await response.json();
 
-        expect(res._getStatusCode()).toBe(200);
-        const data = JSON.parse(res._
+        expect(response.status).toBe(200);
+        expect(result.object).toBe('catalog');
+        expect(Array.isArray(result.data)).toBe(true);
+    });
 
+    it('should return 500 when fetch fails', async () => {
+        global.fetch = jest.fn().mockRejectedValueOnce(new Error('Failed to fetch data'));
+
+        const response = await GET();
+        const result = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(result.error).toBe('Failed to fetch catalog data');
+    });
+});

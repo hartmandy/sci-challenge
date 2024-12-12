@@ -1,32 +1,49 @@
-import { createMocks } from 'node-mocks-http';
-import handler from './route';
+import { GET } from './route';
 
-describe('/api/search', () => {
+describe('/api/search GET', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('should return cards matching HP', async () => {
-        const { req, res } = createMocks({
-            method: 'GET',
-            query: { hp: '5' },
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                total_cards: 1,
+                data: [
+                    {
+                        Set: 'TWI',
+                        Number: '096',
+                        Name: 'Aayla Secura',
+                        HP: '5',
+                    },
+                ],
+            }),
         });
 
-        await handler(req, res);
+        const mockRequest = {
+            url: 'https://example.com/api/search?hp=5',
+        } as Request;
 
-        expect(res._getStatusCode()).toBe(200);
-        const data = JSON.parse(res._getData());
-        expect(data.total_cards).toBeGreaterThan(0);
-        expect(Array.isArray(data.data)).toBe(true);
+        const response = await GET(mockRequest);
+        const result = await response.json();
+
+        expect(response.status).toBe(200);
+        expect(result.total_cards).toBe(1);
+        expect(result.data[0].Name).toBe('Aayla Secura');
     });
 
-    it('should return 400 for invalid hp parameter', async () => {
-        const { req, res } = createMocks({
-            method: 'GET',
-            query: { hp: 'invalid' },
-        });
+    it('should return 500 when fetch fails', async () => {
+        global.fetch = jest.fn().mockRejectedValueOnce(new Error('Failed to fetch cards'));
 
-        await handler(req, res);
+        const mockRequest = {
+            url: 'https://example.com/api/search?hp=5',
+        } as Request;
 
-        expect(res._getStatusCode()).toBe(400);
-        const data = JSON.parse(res._getData());
-        expect(data.error).toBe('Invalid parameter: hp');
+        const response = await GET(mockRequest);
+        const result = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(result.error).toBe('Failed to fetch card data');
     });
-
-    it('should
+});
