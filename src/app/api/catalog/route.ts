@@ -8,6 +8,7 @@ export async function GET() {
         const data = await res.json();
         return NextResponse.json(data);
     } catch (error) {
+        console.error('Catalog API Error:', error); // Log the error for debugging
         return NextResponse.json({ error: 'Failed to fetch catalog data' }, { status: 500 });
     }
 }

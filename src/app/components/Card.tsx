@@ -1,5 +1,7 @@
 "use client";
 import React from 'react';
+import Image from 'next/image';
+
 
 type CardProps = {
     name: string;
@@ -18,7 +20,7 @@ export default function Card({ name, set, cost, power, hp, type, traits, rarity,
         <div className="card border border-gray-400 rounded-lg p-2 m-2 flex items-center bg-gray-800 text-white shadow-lg">
             {/* Left Image Section */}
             <div className="w-32 h-32 flex-shrink-0 mr-4">
-                <img src={frontArt} alt={name} className="w-full h-full object-cover rounded-lg" />
+                <Image src={frontArt} alt={name} className="w-full h-full object-cover rounded-lg" />
             </div>
 
             {/* Right Text Section */}

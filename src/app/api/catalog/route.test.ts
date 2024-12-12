@@ -10,9 +10,9 @@ describe('/api/catalog GET', () => {
             ok: true,
             json: async () => ({
                 object: 'catalog',
-                uri: 'https://api.swu-db.com/catalog/hps',
+                uri: 'https://api.swu-db.com/catalog/HPS',
                 total_values: 20,
-                data: ['0', '+1', '+2', '3'],
+                data: ['0', '+1', '+2', '-3'],
             }),
         });
 
@@ -20,7 +20,7 @@ describe('/api/catalog GET', () => {
         const result = await response.json();
 
         expect(response.status).toBe(200);
-        expect(result.object).toBe('catalog');
+        expect(result.object).toBe('catalogue');
         expect(Array.isArray(result.data)).toBe(true);
     });
 

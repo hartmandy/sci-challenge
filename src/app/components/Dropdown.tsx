@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
 type DropdownProps = {
     onSelect: (selectedValue: string) => void;
 };
 
-export default function Dropdown({ onSelect }: DropdownProps) {
+export default function Dropdown({onSelect}: DropdownProps) {
     const [options, setOptions] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -18,14 +18,19 @@ export default function Dropdown({ onSelect }: DropdownProps) {
                 const result = await res.json();
                 setOptions(result.data); // Ensure we set `options` to `result.data`
                 setLoading(false);
-            } catch (err: any) {
-                setError(err.message);
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError('An unknown error occurred');
+                }
                 setLoading(false);
             }
+
         }
+
         fetchOptions();
     }, []);
-
 
 
     return (

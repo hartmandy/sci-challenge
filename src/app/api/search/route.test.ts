@@ -14,8 +14,8 @@ describe('/api/search GET', () => {
                     {
                         Set: 'TWI',
                         Number: '096',
-                        Name: 'Aayla Secura',
-                        HP: '5',
+                        name: 'Aayla Secura',
+
                     },
                 ],
             }),
