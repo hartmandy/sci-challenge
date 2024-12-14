@@ -22,7 +22,7 @@ type CardData = {
     marketprice: string;
     foilprice: string;
     frontArt: string;
-    id?: string;
+
 
 };
 
@@ -56,28 +56,28 @@ export default function CardList({ hp }: CardListProps) {
                 console.log("|-o-| CL: data", data);
 
                 const formattedCards = Array.isArray(data.data)
-                    ? data.data.map((card: CardData) => ({
-                        set: card.set,
-                        number: card.number,
-                        name: card.name,
-                        type: card.type,
-                        aspects: card.aspects,
-                        traits: card.traits,
-                        arenas: card.arenas,
-                        cost: card.cost,
-                        power: card.power,
-                        hp: card.hp,
-                        fronttext: card.fronttext,
-                        doublesided: card.doublesided,
-                        rarity: card.rarity,
-                        unique: card.unique,
-                        artist: card.artist,
-                        varianttype: card.varianttype,
-                        marketprice: card.marketprice,
-                        foilprice: card.foilprice,
-                        frontArt: card.frontArt,
-                        id: `${card.set}-${card.number}`, // Ensure ID is dynamically created
-                    }))
+                    ? data.data.map((card: any) => ({
+                        set: card.Set,
+                        number: card.Number,
+                        name: card.Name,
+                        type: card.Type,
+                        aspects: card.Aspects,
+                        traits: card.Traits,
+                        arenas: card.Arenas,
+                        cost: card.Cost,
+                        power: card.Power,
+                        hp: card.HP,
+                        fronttext: card.FrontText,
+                        doublesided: card.DoubleSided,
+                        rarity: card.Rarity,
+                        unique: card.Unique,
+                        artist: card.Artist,
+                        varianttype: card.VariantType,
+                        marketprice: card.MarketPrice,
+                        foilprice: card.FoilPrice,
+                        frontArt: card.FrontArt,
+                        id: `${card.Set}-${card.Number}` // Creating a unique ID using set and number
+                    })).sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1))
                     : [];
 
                 setCards(formattedCards);

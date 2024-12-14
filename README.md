@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **Sports Card Investor Dev Challenge**
 
-## Getting Started
+Welcome to the Sports Card Investor Dev Challenge! This task mimics real-world scenarios you’d tackle in our projects, focusing on creating a dynamic and user-friendly card application. Let's see how you solve problems, structure code, and think creatively.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## **Challenge Overview**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Your task is to enhance and fix a provided card listing application, making it more engaging and user-friendly. The application should:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Work like [this example](https://jam.dev/c/5bbe3b26-56e4-4778-9f35-ed188e35f096)**:
+   - A dropdown filters cards based on health points (HP).
+   - Cards can be sorted dynamically using buttons.
+   - Fetch card data via an API and display it attractively.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Add exciting animations to the cards**:
+   - Use a library like [GSAP](https://greensock.com/gsap/) or your choice of CSS animations.
+   - Animations could include hover effects, transitions when cards are sorted, or loading animations.
 
-## Learn More
+3. **Address existing lint and test errors**:
+   - You might encounter ESLint or Jest errors that prevent the application from running.
+   - Fix or suppress these errors as appropriate to ensure a clean development environment.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## **Deliverables**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Submit the following:
 
-## Deploy on Vercel
+1. A link to your **GitHub repository** containing the completed project.
+2. **Instructions** on how to run the application locally, included in the `README.md`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## **What We're Looking For**
+
+Your submission will be evaluated on the following criteria:
+
+1. **Problem-Solving Approach**:
+   - How do you tackle the various aspects of building and fixing this feature?
+
+2. **Code Structure**:
+   - Is your code readable, maintainable, and scalable?
+
+3. **API Handling**:
+   - Are data fetching, caching, and state updates handled efficiently?
+
+4. **User Experience**:
+   - Are dropdown interactions, data loading, and sorting operations smooth?
+
+5. **Communication**:
+   - Keep us updated on your thought process! Share any roadblocks, cool discoveries, or questions you encounter.
+
+---
+
+## **Extra Credit**
+
+Go the extra mile by implementing the following:
+
+- **Dark Mode Support**:
+  - Add a toggle that switches the app to a dark theme.
+
+- **Debounce User Input**:
+  - Implement input debouncing to avoid excessive API calls when typing in a search field.
+
+---
+
+## **Notes**
+
+- This challenge isn’t about perfection—we want to see how you think, solve problems, and iterate.
+- Feel free to use any open-source tools or libraries.
+- Have fun, and don’t hesitate to ask questions or showcase unique ideas!
+
+---
