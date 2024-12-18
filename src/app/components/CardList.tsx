@@ -5,10 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { CardData } from "../types";
 import CardLoader from "./CardLoader";
 
-type CardListProps = {
-  hp: string;
-};
-
 /**
  * A component that displays a list of cards, sorted by a specified key.
  * @param {string} hp - The HP value to filter cards by.
@@ -78,8 +74,8 @@ export default function CardList() {
     }
     fetchCards();
   }, [hp]);
-  // NOTE: Removed dependency of sortKey here. I found that this eliminated the cards 'jumping' with load, and
-  // that means we're not refetching data every time we click a sort button
+  // NOTE: Removed dependency of sortKey here. I found that this eliminated the layout shift with load, and
+  // that means we're not refetching data every time we choose from the sort dropdown
 
   const displayedCards = useMemo(() => {
     let filteredCards = cards;
@@ -87,7 +83,7 @@ export default function CardList() {
     return filteredCards.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
   }, [hp, sortKey, cards]);
 
-  console.log("|-o-| CL: cards", cards);
+  // console.log("|-o-| CL: cards", cards);
 
   return (
     <section>

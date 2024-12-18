@@ -44,7 +44,7 @@ export default function CardFilters() {
     fetchOptions();
   }, []);
 
-  // NOTE: sorts were rewritten to include URL search params
+  // NOTE: sorts were rewritten to include URL search params rather than state management
   function sortCards(key: keyof CardData) {
     const currentParams = new URLSearchParams(window.location.search);
     currentParams.set("sort", key);
