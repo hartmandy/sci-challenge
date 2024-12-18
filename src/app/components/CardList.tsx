@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import Card from "./Card";
 import { useSearchParams } from "next/navigation";
 import { CardData } from "../types";
+import CardLoader from "./CardLoader";
 
 type CardListProps = {
   hp: string;
@@ -90,18 +91,15 @@ export default function CardList() {
 
   return (
     <section>
-      {loading && (
-        <p className="text-center text-lg font-semibold">Loading cards...</p>
-      )}
+      {loading && <CardLoader />}
       {error && (
         <p className="text-center text-red-500 text-lg font-semibold">
           Error: {error}
         </p>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {displayedCards.map((card) => (
-          <Card key={card.id} {...card} />
-        ))}
+        {!loading &&
+          displayedCards.map((card) => <Card key={card.id} {...card} />)}
       </div>
     </section>
   );

@@ -56,7 +56,7 @@ export default function Card({
 
   return (
     <div
-      className={`border rounded-3xl flex flex-col shadow-xl overflow-hidden ${cardHeightClass}`}
+      className={`cursor-pointer border rounded-3xl flex flex-col shadow-xl overflow-hidden ${cardHeightClass}`}
     >
       <Popover>
         <PopoverTrigger asChild>
