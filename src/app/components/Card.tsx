@@ -70,9 +70,10 @@ export default function Card({
           />
         </PopoverTrigger>
         <PopoverContent
-          className="w-[300px] h-[270px]"
+          className="w-[300px]"
           align="center"
           sideOffset={-300}
+          side="bottom"
         >
           <div className="grid gap-4">
             <div className="space-y-2">
