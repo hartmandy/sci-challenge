@@ -52,7 +52,7 @@ export default function Card({
     imageDimensions.height && imageDimensions.width
       ? imageDimensions.height > imageDimensions.width
       : false;
-  const cardHeightClass = isPortrait ? "h-auto" : "h-full md:h-[290px]";
+  const cardHeightClass = isPortrait ? "h-auto" : "h-full md:h-[350px]";
 
   return (
     <div

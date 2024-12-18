@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Card from "./Card";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CardData } from "../types";
 import CardLoader from "./CardLoader";
+import Image from "next/image";
 
 /**
  * A component that displays a list of cards, sorted by a specified key.
@@ -13,25 +14,38 @@ import CardLoader from "./CardLoader";
 
 export default function CardList() {
   const [cards, setCards] = useState<CardData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // NOTE: Added URL search params for filters
   const searchParams = useSearchParams();
   const sortKey = (searchParams.get("sort") || "name") as keyof CardData;
-  const hp = searchParams.get("hp") || "5";
+  const hp = searchParams.get("hp");
+  const search = searchParams.get("search") || "";
+  const router = useRouter();
+
+  // API doesn't have a default show all call, so I'm defaulting it to hp 5 because it needs a query of some kind
+  useEffect(() => {
+    if (!hp) {
+      router.push(`${window.location.pathname}?hp=5`);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!hp) return;
+    if (!hp && !search) return;
     setLoading(true);
     setError(null);
 
     async function fetchCards() {
       try {
-        const res = await fetch(`/api/search?hp=${encodeURIComponent(hp)}`);
-        if (!res.ok) throw new Error("Failed to fetch cards");
+        const params = new URLSearchParams();
+        if (hp) params.append("hp", hp);
+        if (search) params.append("search", search);
+
+        const res = await fetch(`/api/search?${params.toString()}`);
+
         const data = await res.json();
-        console.log("|-o-| CL: data", data);
+        // console.log("|-o-| CL: data", data);
 
         const formattedCards = Array.isArray(data.data)
           ? data.data
@@ -60,6 +74,8 @@ export default function CardList() {
               .sort(dynamicSort(sortKey))
           : [];
 
+        formattedCards.sort(dynamicSort(sortKey));
+
         setCards(formattedCards);
         setLoading(false);
       } catch (err: unknown) {
@@ -73,26 +89,35 @@ export default function CardList() {
       }
     }
     fetchCards();
-  }, [hp]);
+  }, [hp, search]);
   // NOTE: Removed dependency of sortKey here. I found that this eliminated the layout shift with load, and
-  // that means we're not refetching data every time we choose from the sort dropdown
+  // that means we're not refetching data every time we choose from the sort dropdown. I added q for search query.
 
   const displayedCards = useMemo(() => {
-    let filteredCards = cards;
-
-    return filteredCards.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
-  }, [hp, sortKey, cards]);
+    return [...cards].sort(dynamicSort(sortKey));
+  }, [sortKey, cards]);
 
   // console.log("|-o-| CL: cards", cards);
 
   return (
     <section>
       {loading && <CardLoader />}
+
       {error && (
         <p className="text-center text-red-500 text-lg font-semibold">
           Error: {error}
         </p>
       )}
+
+      {!loading && !error && displayedCards.length === 0 && (
+        <div className="flex flex-col items-center justify-center text-center">
+          <Image src="/grogu.png" alt="Grogu image" width={200} height={200} />
+          <p className="text-lg font-semibold mt-4">
+            No results. Search again.
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {!loading &&
           displayedCards.map((card) => <Card key={card.id} {...card} />)}

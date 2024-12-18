@@ -10,7 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import Image from "next/image";
+import { useDebounce } from "../hooks/useDebounce";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 export default function CardFilters() {
   const router = useRouter();
@@ -22,6 +24,9 @@ export default function CardFilters() {
   const [options, setOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const searchParam = searchParams.get("search") ?? "";
+  const [search, setSearch] = useState<string>(searchParam);
+  const debouncedSearchQuery = useDebounce(search, 300);
 
   useEffect(() => {
     async function fetchOptions() {
@@ -29,7 +34,7 @@ export default function CardFilters() {
         const res = await fetch("/api/catalog");
         if (!res.ok) throw new Error("Failed to fetch dropdown options");
         const result = await res.json();
-        setOptions(result.data);
+        setOptions(["--", ...result.data]);
         setLoading(false);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -44,29 +49,69 @@ export default function CardFilters() {
     fetchOptions();
   }, []);
 
-  // NOTE: sorts were rewritten to include URL search params rather than state management
+  // function sortCards(key: keyof CardData) {
+  //   const currentParams = new URLSearchParams(window.location.search);
+  //   currentParams.set("sort", key);
+  //   router.push(`${window.location.pathname}?${currentParams.toString()}`);
+  // }
+
+  // NOTE: sorts were rewritten to include URL search params rather than state management and added in asc or desc option
   function sortCards(key: keyof CardData) {
     const currentParams = new URLSearchParams(window.location.search);
-    currentParams.set("sort", key);
+    const currentSort = currentParams.get("sort");
+    const currentDir = currentParams.get("dir");
+
+    if (currentSort === key) {
+      if (!currentDir || currentDir === "asc") {
+        currentParams.set("dir", "desc");
+      } else {
+        currentParams.set("dir", "asc");
+      }
+    } else {
+      currentParams.set("sort", key);
+      currentParams.delete("dir");
+    }
+
     router.push(`${window.location.pathname}?${currentParams.toString()}`);
   }
 
+  // Same for the hp and the search query
   function handleSelectHp(hp: string) {
     const currentParams = new URLSearchParams(window.location.search);
-    currentParams.set("hp", hp);
+    if (hp === "--") {
+      currentParams.delete("hp");
+    } else {
+      currentParams.set("hp", hp);
+    }
     router.push(`${window.location.pathname}?${currentParams.toString()}`);
   }
 
+  useEffect(() => {
+    const currentParams = new URLSearchParams(window.location.search);
+    if (debouncedSearchQuery) {
+      currentParams.set("search", debouncedSearchQuery);
+    } else {
+      currentParams.delete("search");
+    }
+    router.push(`${window.location.pathname}?${currentParams.toString()}`);
+  }, [debouncedSearchQuery, router]);
+
   return (
-    <div className="flex flex-col md:flex-row gap-4 items-center w-full">
-      <div className="flex items-center rounded-full bg-white p-2">
-        <Image src="/ship.png" width={20} height={20} alt="ship icon" />
-      </div>
+    <div className="flex flex-col md:flex-row gap-4 w-full pb-8">
+      {/* Search Input */}
+      <Input
+        type="text"
+        placeholder="Search for Card..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="max-w-xs"
+      />
 
       {/* HP Filter Select */}
       <Select value={hp} onValueChange={handleSelectHp} disabled={loading}>
-        <SelectTrigger className="w-full md:w-[180px]">
-          <SelectValue placeholder="Select HP" />
+        <SelectTrigger className="max-w-[120px]">
+          <span className="mr-1">HP:</span>
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
@@ -77,18 +122,21 @@ export default function CardFilters() {
         </SelectContent>
       </Select>
 
-      {/* Sort By Select */}
-      <Select value={sortKey} onValueChange={sortCards} disabled={loading}>
-        <SelectTrigger className="w-full md:w-[180px]">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="name">Name</SelectItem>
-          <SelectItem value="set">Set</SelectItem>
-          <SelectItem value="cost">Cost</SelectItem>
-          <SelectItem value="power">Power</SelectItem>
-        </SelectContent>
-      </Select>
+      {/* Sort By Buttons */}
+      <div className="flex gap-2 flex-wrap">
+        <Button onClick={() => sortCards("name")} disabled={loading}>
+          Name
+        </Button>
+        <Button onClick={() => sortCards("set")} disabled={loading}>
+          Set
+        </Button>
+        <Button onClick={() => sortCards("cost")} disabled={loading}>
+          Cost
+        </Button>
+        <Button onClick={() => sortCards("power")} disabled={loading}>
+          Power
+        </Button>
+      </div>
     </div>
   );
 }
